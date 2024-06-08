@@ -7,11 +7,14 @@ function getComputerChoice() {
     const result = Math.floor(Math.random() * 3) + 1;
 
     if( result === 1 ) {
-        return console.log("rock");
+        console.log("Computer chose: rock");
+        return "rock";
     } else if( result === 2 ) {
-        return console.log("paper");
+        console.log("Computer chose: paper")
+        return "paper";
     } else {
-        return console.log("scissor");
+        console.log("Computer chose: scissor")
+        return "scissor";
     }
     
 }
@@ -20,18 +23,27 @@ function getComputerChoice() {
 function getHumanChoice() {
     let choice;
     const validChoices = ["rock", "paper", "scissor"];
-    
+
     do {
-        choice = prompt("Rock, paper, or scissor?").toLowerCase(); 
+      choice = prompt(`Rock, paper, or scissor? (5 rounds)`); 
+      if (choice === null) {
+        console.log("You quit the game");
+        return null;
+      }
+      choice = choice.toLowerCase();
     } while( !validChoices.includes(choice) );
 
     return choice;
 }
 
-function playRound(humanChoice, computerChoice) {
-  if(humanChoice === computerChoice) {
+  function playRound(humanChoice, computerChoice) {
+    if(humanChoice === computerChoice) {
     return console.log("draw");
-  } else if("scissor", "paper" || "paper", "rock") {
+  } else if(
+    (humanChoice === "scissor" && computerChoice === "paper") || 
+    (humanChoice === "paper" && computerChoice === "rock") || 
+    (humanChoice === "rock" && computerChoice === "scissor") 
+  ){
     console.log("You won!");
     return humanScore++
   } else {
@@ -40,13 +52,32 @@ function playRound(humanChoice, computerChoice) {
   } 
 }
 
-const humanSelection = getHumanChoice();
-const computerSelection = getComputerChoice();
-
-console.log(playRound(humanSelection, computerSelection));
-
 function playGame() {
-
+  let i = 0;
+  do {
+    const humanSelection = getHumanChoice();
+    if(humanSelection === null) {
+      console.log("Game ended");
+      return;
+    }
+    const computerSelection = getComputerChoice();  
+    playRound(humanSelection, computerSelection);
+    console.log(`Player score: ${humanScore} \nComputer score: ${computerScore}`);
+    i++;
+  } while (i < 5);
+  finalScore();
 }
 
-console.log(`Player score: ${humanScore} \n Computer score: ${computerScore}`);
+function finalScore() {
+  if(humanScore > 2) {
+    console.log("Congrats! You won!");
+  } else if (humanScore <= 2) {
+    console.log("You lost. Try again.");
+  } else if (humanScore === computerScore) {
+    console.log("Draw. Try again.");
+  } else {
+    console.log("Try again?");
+  }
+}
+
+console.log(playGame());
